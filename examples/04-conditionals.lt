@@ -1,0 +1,12 @@
+program do
+    remember that myVariable is a string
+    myVariable is now "Not a sentence"
+
+    if myVariable == "Some words" do
+        print "The variable contained some words."
+    else if 42 > 99 || 42 == 42 do
+        print "42 is truly the answer"
+    else do
+        print "This code does not make sense anymore"
+    stop
+stop

@@ -1,0 +1,21 @@
+program do
+    # Instantiate loop maximum
+    remember that maximum is an int
+    maximum is now 3
+
+    # Instantiate index
+    remember that index is an int
+
+    # Execute some statements as often as maximum
+    indexed loop from 0 to maximum as index do
+        print "Indexed loop:"
+        print index
+    stop
+
+    # The same but not the same:
+    loop while 2 < index do
+        print "Loop while:"
+        print index
+    	index is now index + 1
+    stop
+stop

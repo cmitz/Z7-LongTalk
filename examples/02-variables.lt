@@ -1,0 +1,14 @@
+program do
+	remember that myVariable is an int
+	myVariable is now 15
+
+	remember that myWords is a string
+	myWords is now "Hello World"
+
+	remember that myBoolean is a boolean
+	myBoolean is now TRUE
+
+	print myVariable
+	print myWords
+	print myBoolean
+stop
