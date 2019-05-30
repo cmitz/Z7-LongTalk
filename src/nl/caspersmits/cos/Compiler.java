@@ -87,12 +87,12 @@ public class Compiler {
         String jasminCode = generateCode(parseTree);
 
         // Phase 5a: Write code to a jasmin file
-        BufferedWriter jasminOut = new BufferedWriter(new FileWriter(jasminFileName));
+        BufferedWriter jasminOut = new BufferedWriter(new FileWriter("LongTalkProgram.j"));
         jasminOut.write(jasminCode);
         jasminOut.close();
 
         // Phase 5b: Assemble into a class file
-        assembleClassFile( jasminCode, classFileName );
+        assembleClassFile( jasminCode, "LongTalkProgram.class" );
     }
 
     /**
@@ -126,7 +126,7 @@ public class Compiler {
      * @return           True if all code is semantically correct
      */
     private boolean runChecker( ParseTree parseTree ) {
-        checker = new Checker();
+        this.checker = new Checker();
         checker.visit(parseTree);
 
         ArrayList<String> typeCheckErrors = checker.getErrors();
@@ -135,14 +135,6 @@ public class Compiler {
                 System.err.println(error);
             return false;
         }
-
-        // Create your own checker that inherits from a BaseVisitor, e.g. ExampleLangBaseVisitor.
-        // Call the visit() method with the parseTree as parameter. In that visitor, you check for
-        // errors in the source code. Examples of errors you may want to check for:
-        //         - A variable is used before it was declared
-        //         - The user is trying to assign a value to a variable with a different type
-        //         - An if-statement has a condition that is not a boolean
-        //         - An expression mixes values of incompatible data types
 
         return true;
     }
@@ -158,25 +150,18 @@ public class Compiler {
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter(str);
 
-        // TODO: You will have to create a visitor that visits the parse tree and generates
-        //       code for the nodes in that tree.
-        //       In your case, you will probably want to supply that visitor with the PrintWriter
-        //       created above and emit lines of Jasmin code for the nodes in the parse tree.
-        //       For now, I'll just create a simple template that prints 'Hello world!'
+        CodeGenerator codeGenerator = new CodeGenerator(checker.getTypes(), checker.getCurrentScope());
+        ArrayList<String> code = codeGenerator.visit(parseTree);
 
+        // Beginning of the file
         out.println(".class public LongTalkProgram");
         out.println(".super java/lang/Object");
         out.println();
 
-        // Main method
-        out.println(".method public static main([Ljava/lang/String;)V");
-        out.println(".limit stack 2");
-        out.println(".limit locals 1");  // NOTE: The args-parameter is a local too
-        out.println();
-        out.println("  getstatic java/lang/System/out Ljava/io/PrintStream;");            // Push System.out
-        out.println("  ldc \"Hello World!\"");                                            // Push "Hello World!"
-        out.println("  invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");  // Call println()
-        out.println("  return");
+        // Collect all lines from the code generator
+        for( String line : code )
+            out.println("    " + line);
+
         out.println(".end method");
 
         return str.toString();
@@ -243,7 +228,7 @@ public class Compiler {
             if (args.length == 0) {
                 // For testing, you can compile a hard coded string here
                 System.err.println("Compiling hard coded string!");
-                compiler.compileString("program do print \"hello\" stop", "LongTalkProgram.j", "LongTalkProgram.class");
+                compiler.compileString("program do print \"Hello world!\" stop", "LongTalkProgram.j", "LongTalkProgram.class");
             } else {
                 // From the source code path, strip off the extension and create file name for the
                 // Jasmin and class file

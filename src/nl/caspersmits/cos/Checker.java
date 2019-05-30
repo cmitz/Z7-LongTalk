@@ -19,6 +19,10 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
         return errors;
     }
 
+    public Scope getCurrentScope() {
+        return currentScope;
+    }
+
     public void addError(ParserRuleContext ctx, String string) {
         if (ctx != null) {
             errors.add(String.format("Error on line %d: %s", ctx.start.getLine(), string));
@@ -28,17 +32,23 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitProgram(LongTalkParser.ProgramContext ctx ) {
+        currentScope = currentScope.createChildScope();
+
+        for( LongTalkParser.StatementContext statement : ctx.statement() )
+            visit(statement);
+
+        currentScope = currentScope.getParentScope();
+        return null;
+    }
+
+    @Override
     public DataType visitPrintstatement(LongTalkParser.PrintstatementContext ctx) {
         DataType expressionType = visit(ctx.expression());
 
         types.put(ctx, expressionType);
 
         return expressionType;
-    }
-
-    @Override
-    public DataType visitExParenthesis(LongTalkParser.ExParenthesisContext ctx) {
-        return null;
     }
 
     @Override
