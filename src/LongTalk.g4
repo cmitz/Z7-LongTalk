@@ -15,7 +15,7 @@ assignment: IDENTIFIER 'is now' expression;
 
 print: 'print' expression;
 
-expression: '(' expression ')'                                      # ExParanthesis
+expression: '(' expression ')'                                      # ExParenthesis
           | left=expression op=MATHOP right=expression              # ExMathOp
           | left=expression op=LOGICOP right=expression             # ExLogicOp
           | left=expression and=('&&' | '||') right=expression      # ExAndOrOp

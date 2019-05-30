@@ -47,13 +47,6 @@ public interface LongTalkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrint(LongTalkParser.PrintContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExParanthesis}
-	 * labeled alternative in {@link LongTalkParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExParanthesis(LongTalkParser.ExParanthesisContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ExIdentifier}
 	 * labeled alternative in {@link LongTalkParser#expression}.
 	 * @param ctx the parse tree
@@ -88,6 +81,13 @@ public interface LongTalkVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExAndOrOp(LongTalkParser.ExAndOrOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExParenthesis}
+	 * labeled alternative in {@link LongTalkParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExParenthesis(LongTalkParser.ExParenthesisContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExIntegerLiteral}
 	 * labeled alternative in {@link LongTalkParser#expression}.

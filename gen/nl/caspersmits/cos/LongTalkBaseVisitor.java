@@ -59,13 +59,6 @@ public class LongTalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExParanthesis(LongTalkParser.ExParanthesisContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitExIdentifier(LongTalkParser.ExIdentifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -95,6 +88,13 @@ public class LongTalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExAndOrOp(LongTalkParser.ExAndOrOpContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitExParenthesis(LongTalkParser.ExParenthesisContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

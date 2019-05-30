@@ -511,17 +511,6 @@ public class LongTalkParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class ExParanthesisContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public ExParanthesisContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LongTalkVisitor ) return ((LongTalkVisitor<? extends T>)visitor).visitExParanthesis(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class ExIdentifierContext extends ExpressionContext {
 		public TerminalNode IDENTIFIER() { return getToken(LongTalkParser.IDENTIFIER, 0); }
 		public ExIdentifierContext(ExpressionContext ctx) { copyFrom(ctx); }
@@ -593,6 +582,17 @@ public class LongTalkParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class ExParenthesisContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExParenthesisContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LongTalkVisitor ) return ((LongTalkVisitor<? extends T>)visitor).visitExParenthesis(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ExIntegerLiteralContext extends ExpressionContext {
 		public TerminalNode INT() { return getToken(LongTalkParser.INT, 0); }
 		public ExIntegerLiteralContext(ExpressionContext ctx) { copyFrom(ctx); }
@@ -633,7 +633,7 @@ public class LongTalkParser extends Parser {
 			switch (_input.LA(1)) {
 			case T__14:
 				{
-				_localctx = new ExParanthesisContext(_localctx);
+				_localctx = new ExParenthesisContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
