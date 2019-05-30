@@ -4,6 +4,7 @@ import jasmin.ClassFile;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Compiles source code in a custom language into Jasmin and then assembles a
@@ -12,6 +13,8 @@ import java.io.*;
  * Check the TODO's.
  */
 public class Compiler {
+    private Checker checker;
+
     /**
      * Thrown when the generated Jasmin code is not accepted by Jasmin.
      */
@@ -123,13 +126,24 @@ public class Compiler {
      * @return           True if all code is semantically correct
      */
     private boolean runChecker( ParseTree parseTree ) {
-        // TODO: Create your own checker that inherits from a BaseVisitor, e.g. ExampleLangBaseVisitor.
-        //       Call the visit() method with the parseTree as parameter. In that visitor, you check for
-        //       errors in the source code. Examples of errors you may want to check for:
+        checker = new Checker();
+        checker.visit(parseTree);
+
+        ArrayList<String> typeCheckErrors = checker.getErrors();
+        if (typeCheckErrors.size() > 0) {
+            for (String error : typeCheckErrors)
+                System.err.println(error);
+            return false;
+        }
+
+        // Create your own checker that inherits from a BaseVisitor, e.g. ExampleLangBaseVisitor.
+        // Call the visit() method with the parseTree as parameter. In that visitor, you check for
+        // errors in the source code. Examples of errors you may want to check for:
         //         - A variable is used before it was declared
         //         - The user is trying to assign a value to a variable with a different type
         //         - An if-statement has a condition that is not a boolean
         //         - An expression mixes values of incompatible data types
+
         return true;
     }
 
@@ -150,7 +164,7 @@ public class Compiler {
         //       created above and emit lines of Jasmin code for the nodes in the parse tree.
         //       For now, I'll just create a simple template that prints 'Hello world!'
 
-        out.println(".class public HelloWorld");
+        out.println(".class public LongTalkProgram");
         out.println(".super java/lang/Object");
         out.println();
 
@@ -229,7 +243,7 @@ public class Compiler {
             if (args.length == 0) {
                 // For testing, you can compile a hard coded string here
                 System.err.println("Compiling hard coded string!");
-                compiler.compileString("hello;", "HelloWorld.j", "HelloWorld.class");
+                compiler.compileString("program do print \"hello\" stop", "LongTalkProgram.j", "LongTalkProgram.class");
             } else {
                 // From the source code path, strip off the extension and create file name for the
                 // Jasmin and class file

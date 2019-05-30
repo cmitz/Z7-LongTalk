@@ -41,11 +41,11 @@ public interface LongTalkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(LongTalkParser.AssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LongTalkParser#print}.
+	 * Visit a parse tree produced by {@link LongTalkParser#printstatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrint(LongTalkParser.PrintContext ctx);
+	T visitPrintstatement(LongTalkParser.PrintstatementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExIdentifier}
 	 * labeled alternative in {@link LongTalkParser#expression}.

@@ -23,10 +23,10 @@ public class LongTalkParser extends Parser {
 		IDENTIFIER=25, WS=26, COMMENT=27;
 	public static final int
 		RULE_program = 0, RULE_statement = 1, RULE_ifstatement = 2, RULE_declaration = 3, 
-		RULE_assignment = 4, RULE_print = 5, RULE_expression = 6;
+		RULE_assignment = 4, RULE_printstatement = 5, RULE_expression = 6;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "statement", "ifstatement", "declaration", "assignment", "print", 
+			"program", "statement", "ifstatement", "declaration", "assignment", "printstatement", 
 			"expression"
 		};
 	}
@@ -167,8 +167,8 @@ public class LongTalkParser extends Parser {
 		public AssignmentContext assignment() {
 			return getRuleContext(AssignmentContext.class,0);
 		}
-		public PrintContext print() {
-			return getRuleContext(PrintContext.class,0);
+		public PrintstatementContext printstatement() {
+			return getRuleContext(PrintstatementContext.class,0);
 		}
 		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -213,7 +213,7 @@ public class LongTalkParser extends Parser {
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(27);
-				print();
+				printstatement();
 				}
 				break;
 			default:
@@ -462,24 +462,24 @@ public class LongTalkParser extends Parser {
 		return _localctx;
 	}
 
-	public static class PrintContext extends ParserRuleContext {
+	public static class PrintstatementContext extends ParserRuleContext {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public PrintContext(ParserRuleContext parent, int invokingState) {
+		public PrintstatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_print; }
+		@Override public int getRuleIndex() { return RULE_printstatement; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof LongTalkVisitor ) return ((LongTalkVisitor<? extends T>)visitor).visitPrint(this);
+			if ( visitor instanceof LongTalkVisitor ) return ((LongTalkVisitor<? extends T>)visitor).visitPrintstatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final PrintContext print() throws RecognitionException {
-		PrintContext _localctx = new PrintContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_print);
+	public final PrintstatementContext printstatement() throws RecognitionException {
+		PrintstatementContext _localctx = new PrintstatementContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_printstatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

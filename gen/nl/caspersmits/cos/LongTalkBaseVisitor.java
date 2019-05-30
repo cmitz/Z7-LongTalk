@@ -52,7 +52,7 @@ public class LongTalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPrint(LongTalkParser.PrintContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPrintstatement(LongTalkParser.PrintstatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -28,11 +28,18 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitPrintstatement(LongTalkParser.PrintstatementContext ctx) {
+        DataType expressionType = visit(ctx.expression());
+
+        types.put(ctx, expressionType);
+
+        return expressionType;
+    }
+
+    @Override
     public DataType visitExParenthesis(LongTalkParser.ExParenthesisContext ctx) {
         return null;
     }
-
-
 
     @Override
     public DataType visitExMathOp(LongTalkParser.ExMathOpContext ctx) {
@@ -40,7 +47,7 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
         DataType rightType = visit(ctx.right);
 
         if (leftType != rightType && leftType != DataType.INT) {
-            addError(ctx, "Only INT can be multiplied");
+            addError(ctx, "Only INT types support mathematical operations");
         }
 
         types.put(ctx, leftType);
