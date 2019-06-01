@@ -53,8 +53,11 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
             addError(ctx, "Expression not resolving into a boolean");
         }
 
+        currentScope = currentScope.createChildScope();
         for( LongTalkParser.StatementContext statement : ctx.statement() )
             visit(statement);
+
+        currentScope = currentScope.getParentScope();
 
         // TODO: put some type?
         return null;

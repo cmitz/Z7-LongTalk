@@ -11,5 +11,5 @@ program do
     stop
 
     print someVar
-    # print otherVar
+    # print otherVar # This would produce a scoping error
 stop
