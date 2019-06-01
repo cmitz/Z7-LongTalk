@@ -1,0 +1,5 @@
+program do
+	myVariable is now 15
+
+	print myVariable
+stop
