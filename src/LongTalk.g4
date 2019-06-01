@@ -9,7 +9,7 @@ statement: ifstatement
          ;
 ifstatement: 'if' NEGATION? expression 'do' statement* ('else if' expression 'do' statement*)* ('else do' statement*)? 'stop';
 
-declaration: 'remember that' IDENTIFIER ('is a' | 'is an') ('int' | 'string' | 'boolean');
+declaration: 'remember that' IDENTIFIER ('is a' | 'is an') declaredType=('int' | 'string' | 'boolean');
 
 assignment: IDENTIFIER 'is now' expression;
 

@@ -5,11 +5,14 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import java.util.ArrayList;
 
+/**
+ * The checker typechecks all declarations, assignments, checks. It also checks scoping and prevents out of scope errors
+ */
 public class Checker extends LongTalkBaseVisitor<DataType> {
     private ParseTreeProperty<DataType> types = new ParseTreeProperty<>();
     private ArrayList<String> errors = new ArrayList<>();
 
-    private Scope currentScope = new Scope(this);
+    private Scope currentScope = new Scope();
 
     public ParseTreeProperty<DataType> getTypes() {
         return types;
@@ -39,6 +42,53 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
             visit(statement);
 
         currentScope = currentScope.getParentScope();
+        return null;
+    }
+
+    @Override
+    public DataType visitDeclaration(LongTalkParser.DeclarationContext ctx) {
+        String variableName = ctx.IDENTIFIER().getText();
+        DataType dataType;
+
+        String declaredType = ctx.declaredType.getText();
+        switch (declaredType) {
+            case "int":
+                dataType = DataType.INT;
+                break;
+            case "string":
+                dataType = DataType.STRING;
+                break;
+            case "boolean":
+                dataType = DataType.BOOLEAN;
+                break;
+            default:
+                addError(ctx, "Not a valid declaration, use \"int\", \"string\" or \"boolean\"");
+                return null;
+        }
+
+        currentScope.declareVariable(new Symbol(variableName, dataType));
+
+        return null;
+    }
+
+    @Override
+    public DataType visitAssignment(LongTalkParser.AssignmentContext ctx) {
+        DataType valueType = visit(ctx.expression());
+
+        if (valueType == null) {
+            addError(ctx, "Invalid type of assignment NULL");
+            return null;
+        }
+
+        Symbol symbol = currentScope.lookupVariable(ctx.IDENTIFIER().getText());
+
+        if (symbol.type != valueType) {
+            addError(ctx, String.format("Cannot assign value of type %s to symbol of type %s", valueType, symbol.type));
+        }
+
+        //TODO: put ctx in types?
+        types.put(ctx, symbol.type);
+
         return null;
     }
 

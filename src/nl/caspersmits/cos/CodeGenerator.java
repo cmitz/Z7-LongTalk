@@ -6,12 +6,18 @@ import java.util.ArrayList;
 
 public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     private ParseTreeProperty<DataType> types;
-    private Scope scope;
+    private ArrayList<String> errors = new ArrayList<>();
+
     private int currentVariableSlot = 1;
 
-    public CodeGenerator(ParseTreeProperty<DataType> types, Scope scope ) {
+    private Scope currentScope = new Scope();
+
+    public ArrayList<String> getErrors() {
+        return errors;
+    }
+
+    public CodeGenerator(ParseTreeProperty<DataType> types ) {
         this.types = types;
-        this.scope = scope;
     }
 
     @Override
@@ -28,6 +34,29 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
             code.addAll(visit(statement));
 
         code.add("return");
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitDeclaration( LongTalkParser.DeclarationContext ctx ) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<String> visitAssignment( LongTalkParser.AssignmentContext ctx ) {
+        ArrayList<String> code = visit(ctx.expression());
+
+        // Generate extra slot
+        int slot = currentVariableSlot++;
+        DataType expressionType = types.get(ctx);
+
+        if( expressionType == DataType.INT || expressionType == DataType.BOOLEAN)
+            code.add(String.format("istore %d", slot));
+        else if( expressionType == DataType.STRING )
+            code.add(String.format("astore %d", slot));
+
+        currentScope.declareVariable(new Symbol(ctx.IDENTIFIER().getText(), expressionType, slot));
 
         return code;
     }
@@ -53,18 +82,26 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     }
 
     @Override
-    public ArrayList<String> visitAssignment( LongTalkParser.AssignmentContext ctx ) {
-        ArrayList<String> code = visit(ctx.expression());
+    public ArrayList<String> visitExIdentifier( LongTalkParser.ExIdentifierContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
 
-        String variableName = ctx.getChild(0).getText();
-        int slot = currentVariableSlot++;
+        Symbol symbol = currentScope.lookupVariable(ctx.IDENTIFIER().getText());
 
-        DataType expressionType = types.get(ctx);
+        if (symbol == null) {
+            errors.add("Symbol was null; " + ctx.IDENTIFIER().getText());
+            return new ArrayList<>();
+        }
 
-        if( expressionType == DataType.INT || expressionType == DataType.BOOLEAN)
-            code.add(String.format("istore %d", slot));
-        else if( expressionType == DataType.STRING )
-            code.add(String.format("astore %d", slot));
+        DataType type = symbol.type;
+        if (type == null || symbol.slot == null) {
+            errors.add("DataType or slot was null; " + ctx.IDENTIFIER().getText());
+            return new ArrayList<>();
+        }
+
+        if( type == DataType.INT  || type == DataType.BOOLEAN)
+            code.add("iload " + symbol.slot);
+        else if( type == DataType.STRING )
+            code.add("aload " + symbol.slot);
 
         return code;
     }

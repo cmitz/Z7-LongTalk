@@ -365,6 +365,7 @@ public class LongTalkParser extends Parser {
 	}
 
 	public static class DeclarationContext extends ParserRuleContext {
+		public Token declaredType;
 		public TerminalNode IDENTIFIER() { return getToken(LongTalkParser.IDENTIFIER, 0); }
 		public DeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -399,9 +400,10 @@ public class LongTalkParser extends Parser {
 				consume();
 			}
 			setState(70);
+			((DeclarationContext)_localctx).declaredType = _input.LT(1);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__9) | (1L << T__10) | (1L << T__11))) != 0)) ) {
-			_errHandler.recoverInline(this);
+				((DeclarationContext)_localctx).declaredType = (Token)_errHandler.recoverInline(this);
 			}
 			else {
 				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;

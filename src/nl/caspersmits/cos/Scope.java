@@ -6,19 +6,14 @@ public class Scope {
     private HashMap<String, Symbol> symbolTable = new HashMap<>();
     private Scope parentScope;
 
-    private Checker checker;
+    public Scope (){}
 
-    public Scope (Checker checker){
-        this.checker = checker;
-    }
-
-    private Scope(Checker checker, Scope parent) {
-        this.checker = checker;
+    private Scope(Scope parent) {
         this.parentScope = parent;
     }
 
     public Scope createChildScope() {
-        return new Scope(checker, this);
+        return new Scope(this);
     }
 
     public void declareVariable(Symbol symbol) {

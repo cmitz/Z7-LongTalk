@@ -41,7 +41,7 @@ public class Compiler {
      * @throws AssembleException if Jasmin code was not valid
      */
     public void compileFile( String inputPath, String jasminFileName, String classFileName )
-            throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException {
+            throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException, LongTalkGeneratorException {
         compile( CharStreams.fromFileName(inputPath), jasminFileName, classFileName );
     }
 
@@ -55,7 +55,7 @@ public class Compiler {
      * @throws AssembleException if Jasmin code was not valid
      */
     public void compileString( String sourceCode, String jasminFileName, String classFileName )
-            throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException {
+            throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException, LongTalkGeneratorException {
         compile( CharStreams.fromString(sourceCode), jasminFileName, classFileName );
     }
 
@@ -69,7 +69,7 @@ public class Compiler {
      * @throws AssembleException if Jasmin code was not valid
      */
     private void compile( CharStream input, String jasminFileName, String classFileName )
-            throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException {
+            throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException, LongTalkGeneratorException {
         // Phase 1: Run the lexer
         CommonTokenStream tokens = runLexer(input);
 
@@ -153,12 +153,19 @@ public class Compiler {
      * @param parseTree  The parseTree to generate code for
      * @return           All Jasmin code that is generated
      */
-    private String generateCode( ParseTree parseTree ) {
+    private String generateCode( ParseTree parseTree ) throws LongTalkGeneratorException {
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter(str);
 
-        CodeGenerator codeGenerator = new CodeGenerator(checker.getTypes(), checker.getCurrentScope());
+        CodeGenerator codeGenerator = new CodeGenerator(checker.getTypes());
         ArrayList<String> code = codeGenerator.visit(parseTree);
+
+        ArrayList<String> errors = codeGenerator.getErrors();
+        if (errors.size() > 0) {
+            for (String e : errors)
+                System.err.println(e);
+            throw new LongTalkGeneratorException("There were errors in the code generator");
+        }
 
         // Beginning of the file
         out.println(".class public LongTalkProgram");
@@ -177,10 +184,10 @@ public class Compiler {
     /**
      * Assembles Jasmin code into a (hopefully valid) JVM-compatible class file.
      *
-     * @param jasminCode     The Jasmin code to assemble.
-     * @param classFileName  Filename of the class to write.
-     * @throws IOException if file could not be written
-     * @throws AssembleException if Jasmin code was not valid
+     * @param jasminCode            The Jasmin code to assemble.
+     * @param classFileName         Filename of the class to write.
+     * @throws IOException          IOException if file could not be written
+     * @throws AssembleException    AssembleException if Jasmin code was not valid
      */
     private void assembleClassFile( String jasminCode, String classFileName )
         throws IOException, AssembleException {
@@ -287,11 +294,11 @@ public class Compiler {
                 }
             }
         }
-        catch( IOException | AssembleException e ) {
-            // TODO: Better error handling? ;-)
-            e.printStackTrace();
+        catch( IOException | AssembleException | LongTalkGeneratorException e ) {
+            System.err.println(e.getMessage());
         } catch (Throwable t) {
             System.err.println(t.getMessage());
+            t.printStackTrace();
         }
     }
 }

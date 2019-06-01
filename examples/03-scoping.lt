@@ -1,0 +1,15 @@
+program do
+    remember that someVar is a string
+    someVar is now "Program Variable"
+
+    if TRUE do
+        remember that otherVar is a string
+        otherVar is now "Smaller Scope Variable"
+
+        print someVar
+        print otherVar
+    stop
+
+    print someVar
+    # print otherVar -> gives a scope error
+stop

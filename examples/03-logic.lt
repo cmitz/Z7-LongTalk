@@ -1,8 +1,0 @@
-program do
-    remember that someVar is an int
-    someVar is now 10
-
-    if !(someVar == 1 || someVar < 9 || someVar > 10) do
-        print "The variable meant something."
-    stop
-stop
