@@ -5,24 +5,19 @@
     .limit stack 99
     .limit locals 99
     
-    ldc "Program Variable"
+    ldc "Not a sentence"
     astore 1
-    ldc 1
+    ldc 0
     ldc 1
     if_icmpeq then1
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    ldc "This code does not make sense anymore"
+    invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
     goto end1
     then1:
-    ldc "Smaller Scope Variable"
-    astore 2
     getstatic java/lang/System/out Ljava/io/PrintStream;
-    aload 1
-    invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    aload 2
+    ldc "This code does not make sense anymore"
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
     end1:
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    aload 1
-    invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
     return
 .end method

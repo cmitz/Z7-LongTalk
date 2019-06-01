@@ -134,6 +134,32 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitExLogicOp(LongTalkParser.ExLogicOpContext ctx) {
+        DataType leftType = visit(ctx.left);
+        DataType rightType = visit(ctx.right);
+
+        String operator = ctx.op.getText();
+        switch(operator) {
+            case "<=":
+            case "<":
+            case ">=":
+            case ">":
+                if (leftType != rightType && leftType != DataType.INT)
+                    addError(ctx, "Can only compare integers types");
+                break;
+            case "==":
+            case "!=":
+                if (leftType != rightType)
+                    addError(ctx, "Can only compare equal types");
+                break;
+
+        }
+
+        types.put(ctx, leftType);
+        return DataType.BOOLEAN;
+    }
+
+    @Override
     public DataType visitExIdentifier(LongTalkParser.ExIdentifierContext ctx) {
         Symbol symbol = currentScope.lookupVariable(ctx.getText());
 

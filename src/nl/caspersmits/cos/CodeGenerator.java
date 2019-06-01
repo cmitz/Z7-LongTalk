@@ -51,7 +51,8 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
         code.add("ldc " + (ctx.NEGATION() != null ? "0" : "1"));
         code.add("if_icmpeq then" + loopCounter);
 
-        // TODO: Else
+        code.addAll(visit(ctx.elsestatements));
+
 
         code.add("goto end" + loopCounter);
 

@@ -29,6 +29,12 @@ public interface LongTalkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfstatement(LongTalkParser.IfstatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LongTalkParser#elseifstatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseifstatement(LongTalkParser.ElseifstatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LongTalkParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

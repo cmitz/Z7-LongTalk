@@ -2,7 +2,7 @@ program do
     remember that someVar is a string
     someVar is now "Program Variable"
 
-    if TRUE do
+    if TRUE
         remember that otherVar is a string
         otherVar is now "Smaller Scope Variable"
 
