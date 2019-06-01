@@ -35,40 +35,34 @@ public class Compiler {
      * Compiles a complete source code file.
      *
      * @param inputPath        Path to the source code to compile.
-     * @param jasminFileName   Path to the file where the Jasmin assembly will be stored.
-     * @param classFileName    Path to the class file.
      * @throws IOException if files could not be read or written
      * @throws AssembleException if Jasmin code was not valid
      */
-    public void compileFile( String inputPath, String jasminFileName, String classFileName )
+    public void compileFile(String inputPath)
             throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException, LongTalkGeneratorException {
-        compile( CharStreams.fromFileName(inputPath), jasminFileName, classFileName );
+        compile( CharStreams.fromFileName(inputPath));
     }
 
     /**
      * Compiles a string.
      *
      * @param sourceCode       The source code to compile.
-     * @param jasminFileName   Path to the file where the Jasmin assembly will be stored.
-     * @param classFileName    Path to the class file to write.
      * @throws IOException if files could not be read or written
      * @throws AssembleException if Jasmin code was not valid
      */
-    public void compileString( String sourceCode, String jasminFileName, String classFileName )
+    public void compileString(String sourceCode)
             throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException, LongTalkGeneratorException {
-        compile( CharStreams.fromString(sourceCode), jasminFileName, classFileName );
+        compile( CharStreams.fromString(sourceCode));
     }
 
     /**
      * Compiles a file. The source code is lexed (turned into tokens), parsed (a parse tree
      * created) then Jasmin code is generated and assembled into a class.
      * @param input           Stream to the source code input.
-     * @param jasminFileName  Path to the file where the Jasmin assembly will be stored.
-     * @param classFileName   Path to the class file to write.
      * @throws IOException if files could not be read or written
      * @throws AssembleException if Jasmin code was not valid
      */
-    private void compile( CharStream input, String jasminFileName, String classFileName )
+    private void compile(CharStream input)
             throws IOException, AssembleException, LongTalkTypeException, LongTalkSyntaxException, LongTalkGeneratorException {
         // Phase 1: Run the lexer
         CommonTokenStream tokens = runLexer(input);
@@ -217,7 +211,7 @@ public class Compiler {
      * @return String Output of the executed program
      * @throws Throwable when the invocation of Main failed
      */
-    private static String runClassFile() throws Throwable {
+    public static String runClassFile() throws Throwable {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos);
         System.setOut(printStream);
@@ -274,16 +268,10 @@ public class Compiler {
                 // From the source code path, strip off the extension and create file name for the
                 // Jasmin and class file
                 String sourceCodePath = args[0];
-                int dotIndex = sourceCodePath.lastIndexOf('.');
-                if( dotIndex == -1 )
-                    dotIndex = sourceCodePath.length();
-
-                String jasminPath = sourceCodePath.substring(0, dotIndex-1) + ".j";
-                String classPath = sourceCodePath.substring(0, dotIndex-1) + ".class";
 
                 // Compile the source code
                 try {
-                    compiler.compileFile(sourceCodePath, jasminPath, classPath);
+                    compiler.compileFile(sourceCodePath);
                 } catch (LongTalkTypeException | LongTalkSyntaxException e) {
                     execute = false;
                     System.err.println(e.getMessage());
