@@ -7,7 +7,7 @@ statement: ifstatement
          | assignment
          | printstatement
          ;
-ifstatement: 'if' NEGATION? expression 'do' statement* ('else if' expression 'do' statement*)* ('else do' statement*)? 'stop';
+ifstatement: 'if' NEGATION? compareExpression=expression 'do' statement* ('else if' expression 'do' statement*)* ('else do' statement*)? 'stop';
 
 declaration: 'remember that' IDENTIFIER ('is a' | 'is an') declaredType=('int' | 'string' | 'boolean');
 

@@ -9,6 +9,7 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     private ArrayList<String> errors = new ArrayList<>();
 
     private int currentVariableSlot = 1;
+    private int loopCounter = 0;
 
     private Scope currentScope = new Scope();
 
@@ -39,7 +40,54 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     }
 
     @Override
+    public ArrayList<String> visitIfstatement( LongTalkParser.IfstatementContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+        // Increment loopCounter so next loop has proper labels
+        loopCounter++;
+
+        code.addAll(visit(ctx.compareExpression));
+
+        code.add("ldc " + (ctx.NEGATION() != null ? "0" : "1"));
+        code.add("if_icmpeq then" + loopCounter);
+
+        // TODO: Else
+
+        code.add("goto end" + loopCounter);
+
+        code.add("then" + loopCounter + ":");
+        for( LongTalkParser.StatementContext statement : ctx.statement() )
+            code.addAll(visit(statement));
+
+        code.add("end" + loopCounter + ":");
+
+        return code;
+    }
+
+    @Override
     public ArrayList<String> visitDeclaration( LongTalkParser.DeclarationContext ctx ) {
+        // Generate extra slot
+        Integer slot = currentVariableSlot++;
+        DataType dataType;
+
+        String declaredType = ctx.declaredType.getText();
+        switch (declaredType) {
+            case "int":
+                dataType = DataType.INT;
+                break;
+            case "string":
+                dataType = DataType.STRING;
+                break;
+            case "boolean":
+                dataType = DataType.BOOLEAN;
+                break;
+            default:
+                errors.add("Bad declaration");
+                return null;
+        }
+
+        currentScope.declareVariable(new Symbol(ctx.IDENTIFIER().getText(), dataType, slot));
+
         return new ArrayList<>();
     }
 
@@ -47,16 +95,12 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitAssignment( LongTalkParser.AssignmentContext ctx ) {
         ArrayList<String> code = visit(ctx.expression());
 
-        // Generate extra slot
-        int slot = currentVariableSlot++;
-        DataType expressionType = types.get(ctx);
+        Symbol symbol = currentScope.lookupVariable(ctx.IDENTIFIER().getText());
 
-        if( expressionType == DataType.INT || expressionType == DataType.BOOLEAN)
-            code.add(String.format("istore %d", slot));
-        else if( expressionType == DataType.STRING )
-            code.add(String.format("astore %d", slot));
-
-        currentScope.declareVariable(new Symbol(ctx.IDENTIFIER().getText(), expressionType, slot));
+        if( symbol.type == DataType.INT || symbol.type == DataType.BOOLEAN)
+            code.add(String.format("istore %d", symbol.slot));
+        else if( symbol.type == DataType.STRING )
+            code.add(String.format("astore %d", symbol.slot));
 
         return code;
     }
@@ -77,7 +121,7 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
         else if( expressionType == DataType.BOOLEAN )
             code.add("invokevirtual java/io/PrintStream/println(Z)V");
         else
-            code.add("; Oops... should have a println()-call here...");
+            errors.add("Not a valid println found for " + ctx.expression().getText());
         return code;
     }
 

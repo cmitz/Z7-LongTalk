@@ -232,6 +232,7 @@ public class LongTalkParser extends Parser {
 	}
 
 	public static class IfstatementContext extends ParserRuleContext {
+		public ExpressionContext compareExpression;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -276,7 +277,7 @@ public class LongTalkParser extends Parser {
 			}
 
 			setState(34);
-			expression(0);
+			((IfstatementContext)_localctx).compareExpression = expression(0);
 			setState(35);
 			match(T__3);
 			setState(39);

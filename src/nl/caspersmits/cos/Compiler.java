@@ -278,6 +278,7 @@ public class Compiler {
                 }
 
                 if (execute) {
+                    System.out.println("Program output:");
                     System.out.println(runClassFile());
                 }
             }

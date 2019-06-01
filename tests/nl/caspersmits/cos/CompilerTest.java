@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CompilerTest {
+class CompilerTest {
 
     private Compiler compiler;
 
@@ -16,7 +16,7 @@ public class CompilerTest {
     }
 
     @Test
-    public void testHelloWorld() {
+    void testHelloWorld() {
         try {
             compiler.compileString("program do print \"Hello World!\" stop");
 
@@ -25,6 +25,5 @@ public class CompilerTest {
         } catch (Throwable e) {
             fail(e.toString());
         }
-
     }
 }

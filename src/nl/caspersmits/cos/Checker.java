@@ -46,6 +46,21 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitIfstatement( LongTalkParser.IfstatementContext ctx ) {
+        DataType expressionType = visit(ctx.compareExpression);
+
+        if (expressionType != DataType.BOOLEAN) {
+            addError(ctx, "Expression not resolving into a boolean");
+        }
+
+        for( LongTalkParser.StatementContext statement : ctx.statement() )
+            visit(statement);
+
+        // TODO: put some type?
+        return null;
+    }
+
+    @Override
     public DataType visitDeclaration(LongTalkParser.DeclarationContext ctx) {
         String variableName = ctx.IDENTIFIER().getText();
         DataType dataType;
@@ -84,9 +99,9 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
 
         if (symbol.type != valueType) {
             addError(ctx, String.format("Cannot assign value of type %s to symbol of type %s", valueType, symbol.type));
+            return null;
         }
 
-        //TODO: put ctx in types?
         types.put(ctx, symbol.type);
 
         return null;
@@ -126,7 +141,6 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
         }
 
         types.put(ctx, symbol.type);
-
         return symbol.type;
     }
 
