@@ -88,13 +88,49 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
         // Go to end of this elseif block if false (opposite of ifstatement!)
         code.add("if_icmpne ifend" + parentBranch + "_" + innerBranch);
 
-        code.addAll( visit(ctx.thenstatements) );
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            code.addAll( visit(statement) );
 
         // If done, go to end of parent block
         code.add("goto ifend" + parentBranch);
 
         // End of elseif block
         code.add("ifend" + parentBranch + "_" + innerBranch + ":");
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitIndexedloopstatement( LongTalkParser.IndexedloopstatementContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitWhileloopstatement( LongTalkParser.WhileloopstatementContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+        int branch = ++branchCounter;
+        // Start loop
+        code.add("beginloop" + branch + ":");
+
+        // Load compare statement onto stack
+        code.addAll( visit(ctx.compareExpression) );
+        code.add("ldc 1");
+
+        // If condition is false, go to endloop
+        code.add("if_icmpne endloop" + branch);
+
+        // Execute statements
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            code.addAll( visit(statement) );
+
+        // Repeat from beginloop
+        code.add("goto beginloop" + branch);
+        code.add("endloop" + branch + ":");
 
         return code;
     }

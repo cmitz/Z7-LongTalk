@@ -3,12 +3,18 @@ grammar LongTalk;
 program: 'program do' statement* 'stop' EOF;
 
 statement: ifstatement
+         | indexedloopstatement
+         | whileloopstatement
          | declaration
          | assignment
          | printstatement
          ;
 ifstatement: 'if' NEGATION? compareExpression=expression thenstatements+=statement* elseifstatement* ('else' elsestatements+=statement*)? 'stop';
-elseifstatement: 'else if' NEGATION? compareExpression=expression thenstatements=statement*;
+elseifstatement: 'else if' NEGATION? compareExpression=expression thenstatements+=statement*;
+
+indexedloopstatement: 'indexed loop from' from=expression 'to' to=expression 'as' IDENTIFIER 'do' thenstatements+=statement* 'stop';
+
+whileloopstatement: 'loop while' compareExpression=expression 'do' thenstatements+=statement* 'stop';
 
 declaration: 'remember that' IDENTIFIER ('is a' | 'is an') declaredType=('int' | 'string' | 'boolean');
 

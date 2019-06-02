@@ -69,15 +69,53 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
 
     @Override
     public DataType visitElseifstatement( LongTalkParser.ElseifstatementContext ctx) {
-        //TODO: Fix duplication of ifstatement somehow?
         DataType expressionType = visit(ctx.compareExpression);
 
         if (expressionType != DataType.BOOLEAN) {
-            addError(ctx, "Expression not resolving into a boolean");
+            addError(ctx, "Condition must resolve into a boolean");
         }
 
         currentScope = currentScope.createChildScope();
-        visit(ctx.thenstatements);
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            visit(statement);
+        currentScope = currentScope.getParentScope();
+
+        return null;
+    }
+
+    @Override
+    public DataType visitIndexedloopstatement( LongTalkParser.IndexedloopstatementContext ctx ) {
+        DataType fromType = visit(ctx.from);
+        DataType toType = visit(ctx.to);
+
+        if (!(fromType == DataType.INT && toType == DataType.INT)) {
+            addError(ctx, "Indexed loop bounds can only be integers");
+        }
+
+        DataType indexType = currentScope.lookupVariable(ctx.IDENTIFIER().getText()).type;
+        if (indexType != DataType.INT) {
+            addError(ctx, "Identifier must be of type int");
+        }
+
+        currentScope = currentScope.createChildScope();
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            visit(statement);
+        currentScope = currentScope.getParentScope();
+
+        return null;
+    }
+
+    @Override
+    public DataType visitWhileloopstatement( LongTalkParser.WhileloopstatementContext ctx ) {
+        DataType conditionType = visit(ctx.compareExpression);
+
+        if (conditionType != DataType.BOOLEAN) {
+            addError(ctx, "Condition must resolve into a boolean");
+        }
+
+        currentScope = currentScope.createChildScope();
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            visit(statement);
         currentScope = currentScope.getParentScope();
 
         return null;

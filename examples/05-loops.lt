@@ -1,21 +1,25 @@
 program do
     # Instantiate loop maximum
-    remember that maximum is an int
-    maximum is now 3
+    #remember that maximum is an int
+    #maximum is now 3
 
-    # Instantiate index
-    remember that index is an int
+    # Initiate index
+    # remember that index is an int
 
     # Execute some statements as often as maximum
-    indexed loop from 0 to maximum as index do
-        print "Indexed loop:"
-        print index
-    stop
+    #indexed loop from 0 to maximum as index do
+    #    print "Indexed loop:"
+    #    print index
+    #stop
+
+    # Initiate second index
+    remember that otherIndex is an int
+    otherIndex is now 0
 
     # The same but not the same:
-    loop while 2 < index do
+    loop while otherIndex < 2 do
         print "Loop while:"
-        print index
-    	index is now index + 1
+        print otherIndex
+    	otherIndex is now otherIndex + 1
     stop
 stop

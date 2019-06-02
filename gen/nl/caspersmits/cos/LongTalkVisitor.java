@@ -35,6 +35,18 @@ public interface LongTalkVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitElseifstatement(LongTalkParser.ElseifstatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LongTalkParser#indexedloopstatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIndexedloopstatement(LongTalkParser.IndexedloopstatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LongTalkParser#whileloopstatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileloopstatement(LongTalkParser.WhileloopstatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LongTalkParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
