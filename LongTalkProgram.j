@@ -42,12 +42,12 @@
     goto ifend1
     ifend1_1:
     getstatic java/lang/System/out Ljava/io/PrintStream;
-    ldc "This code makes perfectly sense"
+    ldc "This code does NOT make sense anymore"
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
     goto ifend1
     ifthen1:
     getstatic java/lang/System/out Ljava/io/PrintStream;
-    ldc "The variable contained some FALSE. Wait, what?"
+    ldc "The variable contained FALSE. Wait, what?"
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
     ifend1:
     return

@@ -157,6 +157,11 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     }
 
     @Override
+    public ArrayList<String> visitExParenthesis( LongTalkParser.ExParenthesisContext ctx ) {
+        return new ArrayList<>(visit(ctx.expression()));
+    }
+
+    @Override
     public ArrayList<String> visitExMathOp( LongTalkParser.ExMathOpContext ctx ) {
         ArrayList<String> code = new ArrayList<>();
 

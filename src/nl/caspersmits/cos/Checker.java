@@ -138,6 +138,15 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitExParenthesis( LongTalkParser.ExParenthesisContext ctx ) {
+        DataType expressionType = visit(ctx.expression());
+
+        types.put(ctx, expressionType);
+
+        return expressionType;
+    }
+
+    @Override
     public DataType visitExMathOp(LongTalkParser.ExMathOpContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);

@@ -3,10 +3,10 @@ program do
     myVariable is now FALSE
 
     if myVariable
-        print "The variable contained some FALSE. Wait, what?"
+        print "The variable contained FALSE. Wait, what?"
     else if 42 > 99 || 42 == 42
         print "42 is truly the answer"
     else
-        print "This code makes perfectly sense"
+        print "This code does NOT make sense anymore"
     stop
 stop

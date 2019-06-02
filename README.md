@@ -59,15 +59,16 @@ It consists of `remember that`, some variable name, `is a` or `is an` (does not 
 
 ### Conditionals
 ```ruby
-if myVariable == "Some words" do
+if myVariable == "Some words"
 	print "The variable contained some words."
-else if 42 > 99 || 42 == 42 do
+else if 42 > 99 || 42 == 42
 	print "42 is truly the answer"
-else do
+else
 	print "This code does not make sense anymore"
 stop 
 ```
 
+Conditionals are eagerly evaluated, so with the or statement (||), it will evaluate both sides
 
 ### Program
 
@@ -121,7 +122,7 @@ Is mostly ignored.
 | Assignments | `<variableName> is now <value>` | 
 | Expressions | `+`, `-`, `*`, `/`, `(`  `)` |
 | Print | `print "Hello world!"` |
-| Conditionals | `if <variable> || <boolean expression> do ... stop` |
+| Conditionals | `if <variable> || <boolean expression> <statements> stop` |
 | Program | `program do ... stop` |
 | Comments | `# This is a comment` |
 | Whitespace | ignored |
@@ -159,7 +160,7 @@ program do
     remember that someVar is an int
     someVar is now 10
 
-    if !(someVar == 1 || someVar < 9 || someVar > 10) do
+    if !(someVar == 1 || someVar < 9 || someVar > 10)
         print "The variable meant something."
     stop
 stop
