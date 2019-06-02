@@ -165,7 +165,10 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
 
         Symbol symbol = currentScope.lookupVariable(ctx.IDENTIFIER().getText());
 
-        if (symbol.type != valueType) {
+        if (symbol == null) {
+            addError(ctx, String.format("Variable %s must be declared before assignment", ctx.IDENTIFIER().getText()));
+            return null;
+        } else if (symbol.type != valueType) {
             addError(ctx, String.format("Cannot assign value of type %s to symbol of type %s", valueType, symbol.type));
             return null;
         }

@@ -3,8 +3,10 @@ package nl.caspersmits.cos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class CompilerTest {
 
@@ -77,6 +79,27 @@ class CompilerTest {
         assertEqualsOutputFile("examples/05-loops.lt", expectedOutput);
     }
 
+    @Test
+    void testBadExampleOne() {
+        String expectedOutput = "line 3:0 mismatched input 'stop' expecting {'(', BOOLEAN, INT, STRING, IDENTIFIER}\n";
+
+        assertEqualsCompileErrors(
+                "examples/91-SyntaxError-print.lt",
+                LongTalkException.class,
+                expectedOutput);
+    }
+
+    @Test
+    void testBadExampleTwo() { // TODO: less generic error?
+        String expectedOutput = "Error on line 2: Variable myVariable must be declared before assignment\n" +
+                "Error on line 4: Variable myVariable not declared.\n";
+
+        assertEqualsCompileErrors(
+                "examples/92-DeclarationError-variables.lt",
+                LongTalkException.class,
+                expectedOutput);
+    }
+
     /**
      * Asserts that the output of a source file is the same as expected
      * @param fileName          Source file to compile and run
@@ -91,5 +114,27 @@ class CompilerTest {
         } catch (Throwable e) {
             fail(e.toString());
         }
+    }
+
+    /**
+     * Asserts that the compiling of a bad file throws errors and prints those
+     * @param fileName              Source file to compile and run
+     * @param expectedException     LongTypeException class to assert
+     * @param expectedOutput        Output that is expected
+     */
+    void assertEqualsCompileErrors(String fileName, Class<LongTalkException> expectedException, String expectedOutput) {
+        // Capture stdErr
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        PrintStream stdErr = System.err;
+        System.setErr(new PrintStream(errContent));
+
+        assertThrows(expectedException, () -> {
+            compiler.compileFile(fileName);
+        });
+
+        assertEquals(expectedOutput, errContent.toString());
+
+        // Reset stdErr
+        System.setErr(stdErr);
     }
 }
