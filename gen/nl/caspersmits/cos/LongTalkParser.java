@@ -233,22 +233,23 @@ public class LongTalkParser extends Parser {
 
 	public static class IfstatementContext extends ParserRuleContext {
 		public ExpressionContext compareExpression;
+		public StatementContext thenstatements;
 		public StatementContext elsestatements;
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode NEGATION() { return getToken(LongTalkParser.NEGATION, 0); }
-		public List<StatementContext> statement() {
-			return getRuleContexts(StatementContext.class);
-		}
-		public StatementContext statement(int i) {
-			return getRuleContext(StatementContext.class,i);
-		}
 		public List<ElseifstatementContext> elseifstatement() {
 			return getRuleContexts(ElseifstatementContext.class);
 		}
 		public ElseifstatementContext elseifstatement(int i) {
 			return getRuleContext(ElseifstatementContext.class,i);
+		}
+		public List<StatementContext> statement() {
+			return getRuleContexts(StatementContext.class);
+		}
+		public StatementContext statement(int i) {
+			return getRuleContext(StatementContext.class,i);
 		}
 		public IfstatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -289,7 +290,7 @@ public class LongTalkParser extends Parser {
 				{
 				{
 				setState(37);
-				statement();
+				((IfstatementContext)_localctx).thenstatements = statement();
 				}
 				}
 				setState(42);

@@ -5,19 +5,19 @@
     .limit stack 99
     .limit locals 99
     
-    ldc "Not a sentence"
-    astore 1
     ldc 0
+    istore 1
+    iload 1
     ldc 1
-    if_icmpeq then1
+    if_icmpeq ifthen0
     getstatic java/lang/System/out Ljava/io/PrintStream;
     ldc "This code does not make sense anymore"
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-    goto end1
-    then1:
+    goto ifend0
+    ifthen0:
     getstatic java/lang/System/out Ljava/io/PrintStream;
-    ldc "This code does not make sense anymore"
+    ldc "The variable contained some FALSE. Wait, what?"
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-    end1:
+    ifend0:
     return
 .end method

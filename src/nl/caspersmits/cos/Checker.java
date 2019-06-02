@@ -126,6 +126,7 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
 
         if (leftType != rightType && leftType != DataType.INT) {
             addError(ctx, "Only INT types support mathematical operations");
+            return null;
         }
 
         types.put(ctx, leftType);
@@ -134,7 +135,7 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitExLogicOp(LongTalkParser.ExLogicOpContext ctx) {
+    public DataType visitExLogicOp( LongTalkParser.ExLogicOpContext ctx ) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
 
@@ -144,19 +145,31 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
             case "<":
             case ">=":
             case ">":
+            case "==": //TODO: also compare strings?
+            case "!=": //TODO: also compare strings?
                 if (leftType != rightType && leftType != DataType.INT)
                     addError(ctx, "Can only compare integers types");
-                break;
-            case "==":
-            case "!=":
-                if (leftType != rightType)
-                    addError(ctx, "Can only compare equal types");
                 break;
 
         }
 
         types.put(ctx, leftType);
         return DataType.BOOLEAN;
+    }
+
+    @Override
+    public DataType visitExAndOrOp( LongTalkParser.ExAndOrOpContext ctx ) {
+        DataType leftType = visit(ctx.left);
+        DataType rightType = visit(ctx.right);
+
+        if (leftType != rightType && leftType != DataType.BOOLEAN) {
+            addError(ctx, "Only BOOLEAN types support && and || operations");
+            return null;
+        }
+
+        types.put(ctx, leftType);
+
+        return leftType;
     }
 
     @Override

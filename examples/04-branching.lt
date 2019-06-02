@@ -1,9 +1,12 @@
 program do
-    remember that myVariable is a string
-    myVariable is now "Not a sentence"
+    remember that myVariable is a boolean
+    myVariable is now FALSE
 
-    if FALSE
+    if myVariable
+        print "The variable contained some FALSE. Wait, what?"
+    # else if 42 > 99 || 42 == 42
+    #    print "42 is truly the answer"
     else
-        print "This code does not make sense anymore"
+        print "This code makes perfectly sense"
     stop
 stop

@@ -9,7 +9,7 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     private ArrayList<String> errors = new ArrayList<>();
 
     private int currentVariableSlot = 1;
-    private int loopCounter = 0;
+    private int branchCounter = 0;
 
     private Scope currentScope = new Scope();
 
@@ -43,25 +43,23 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitIfstatement( LongTalkParser.IfstatementContext ctx ) {
         ArrayList<String> code = new ArrayList<>();
 
-        // Increment loopCounter so next loop has proper labels
-        loopCounter++;
+        // Increment branchCounter so next loop has proper labels
+        int branch = branchCounter++;
 
         code.addAll(visit(ctx.compareExpression));
 
         code.add("ldc " + (ctx.NEGATION() != null ? "0" : "1"));
-        code.add("if_icmpeq then" + loopCounter);
+        code.add("if_icmpeq ifthen" + branch);
 
         code.addAll(visit(ctx.elsestatements));
 
+        code.add("goto ifend" + branch);
 
-        code.add("goto end" + loopCounter);
+        code.add("ifthen" + branch + ":");
 
-        code.add("then" + loopCounter + ":");
-        for( LongTalkParser.StatementContext statement : ctx.statement() )
-            code.addAll(visit(statement));
+        code.addAll(visit(ctx.thenstatements));
 
-        code.add("end" + loopCounter + ":");
-
+        code.add("ifend" + branch + ":");
         return code;
     }
 
@@ -123,6 +121,86 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
             code.add("invokevirtual java/io/PrintStream/println(Z)V");
         else
             errors.add("Not a valid println found for " + ctx.expression().getText());
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitExMathOp( LongTalkParser.ExMathOpContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+        code.addAll( visit( ctx.left ));
+        code.addAll( visit( ctx.right ));
+
+        switch (ctx.op.getText()) {
+            case "*":
+                code.add("imul");
+                break;
+            case "/":
+                code.add("idiv");
+                break;
+            case "+":
+                code.add("iadd");
+                break;
+            case "-":
+                code.add("isub");
+                break;
+            default:
+                errors.add("Unknown operator found");
+        }
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitExLogicOp( LongTalkParser.ExLogicOpContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+        code.addAll( visit( ctx.left ) );
+        code.addAll( visit( ctx.right ) );
+
+        int branch = branchCounter++;
+
+        String operator = ctx.op.getText();
+        String operatorInstruction = "";
+        switch(operator) {
+            case "<=":
+                operatorInstruction = "if_icmple";
+                break;
+            case "<":
+                operatorInstruction = "if_icmplt";
+                break;
+            case ">=":
+                operatorInstruction = "if_icmpge";
+                break;
+            case ">":
+                operatorInstruction = "if_icmpgt";
+                break;
+            case "==":
+                operatorInstruction = "if_icmpeq";
+                break;
+            case "!=":
+                operatorInstruction = "if_icmpne";
+                break;
+            default:
+                errors.add("Unknown operator found");
+        }
+
+        code.add(operatorInstruction + " lgctrue" + branch);
+        code.add("ldc 0"); //false
+        code.add("goto lgcend" + branch);
+        code.add("lgctrue" + branch + ":");
+        code.add("ldc 1"); //true
+        code.add("lgcend" + branch + ":");
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitExAndOrOp( LongTalkParser.ExAndOrOpContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+        //TODO: must set only a 1 or a 0 in the end
+
         return code;
     }
 
