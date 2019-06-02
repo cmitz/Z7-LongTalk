@@ -58,6 +58,25 @@ class CompilerTest {
         assertEqualsOutputFile("examples/04-branching.lt", expectedOutput);
     }
 
+    @Test
+    void testExampleFive() {
+        String expectedOutput = "Indexed loop:\n" +
+                "1\n" +
+                "Indexed loop:\n" +
+                "2\n" +
+                "Indexed loop:\n" +
+                "3\n" +
+                "Indexed loop:\n" +
+                "4\n" +
+                "Indexed loop:\n" +
+                "5\n" +
+                "Loop while:\n" +
+                "0\n" +
+                "Loop while:\n" +
+                "1\n";
+        assertEqualsOutputFile("examples/05-loops.lt", expectedOutput);
+    }
+
     /**
      * Asserts that the output of a source file is the same as expected
      * @param fileName          Source file to compile and run
