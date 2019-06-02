@@ -1,0 +1,15 @@
+program do
+    remember that myVariable is an int
+	myVariable is now 15
+
+	if TRUE
+	    remember that otherVariable is an int
+	    otherVariable is now 2
+
+	    # This works, myVariable comes from a higher scope
+	    print myVariable
+	stop
+
+	# This does not work, otherVariable comes from some child scope
+    print otherVariable
+stop

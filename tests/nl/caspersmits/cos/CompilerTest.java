@@ -100,6 +100,36 @@ class CompilerTest {
                 expectedOutput);
     }
 
+    @Test
+    void testBadExampleThree() {
+        String expectedOutput = "Error on line 14: Variable otherVariable not declared.\n";
+
+        assertEqualsCompileErrors(
+                "examples/93-OutOfScopeError-scoping.lt",
+                LongTalkTypeException.class,
+                expectedOutput);
+    }
+
+    @Test
+    void testBadExampleFour() {
+        String expectedOutput = "Error on line 6: Expression not resolving into a boolean\n";
+
+        assertEqualsCompileErrors(
+                "examples/94-NonBooleanError-comparisons.lt",
+                LongTalkTypeException.class,
+                expectedOutput);
+    }
+
+    @Test
+    void testBadExampleFive() {
+        String expectedOutput = "Error on line 2: Expression not resolving into a boolean\n";
+
+        assertEqualsCompileErrors(
+                "examples/95-TypeError-comparingStrings.lt",
+                LongTalkTypeException.class,
+                expectedOutput);
+    }
+
     /**
      * Asserts that the output of a source file is the same as expected
      * @param fileName          Source file to compile and run

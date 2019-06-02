@@ -1,0 +1,9 @@
+program do
+    remember that myVariable is an int
+	myVariable is now 15
+
+    # This does not work, myVariable is an int
+	if myVariable
+	    print myVariable
+	stop
+stop

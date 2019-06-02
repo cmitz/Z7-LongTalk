@@ -1,0 +1,5 @@
+program do
+	if "One string" == "Two string"
+	    print "Probably nothing"
+	stop
+stop
