@@ -104,7 +104,35 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitIndexedloopstatement( LongTalkParser.IndexedloopstatementContext ctx ) {
         ArrayList<String> code = new ArrayList<>();
 
+        int branch = ++branchCounter;
 
+        // Look up identifier
+        Symbol identifier = currentScope.lookupVariable(ctx.IDENTIFIER().getText());
+
+        // Set the identifier on 'from' value
+        code.addAll( visit(ctx.from) );
+        code.add("istore " + identifier.slot);
+
+        // Start loop
+        code.add("beginloop" + branch + ":");
+
+        // Load compare statement onto stack
+        code.add("iload " + identifier.slot);
+        code.addAll( visit(ctx.to) );
+
+        // If condition is false, go to endloop
+        code.add("if_icmpge endloop" + branch);
+
+        // Increase identifier
+        code.add("iinc " + identifier.slot + " 1");
+
+        // Execute statements
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            code.addAll( visit(statement) );
+
+        // Repeat from beginloop
+        code.add("goto beginloop" + branch);
+        code.add("endloop" + branch + ":");
 
         return code;
     }

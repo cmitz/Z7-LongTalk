@@ -92,7 +92,14 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
             addError(ctx, "Indexed loop bounds can only be integers");
         }
 
-        DataType indexType = currentScope.lookupVariable(ctx.IDENTIFIER().getText()).type;
+        Symbol symbol = currentScope.lookupVariable(ctx.IDENTIFIER().getText());
+
+        if (symbol == null) {
+            addError(ctx, "Index must have been declared");
+            return null;
+        }
+
+        DataType indexType = symbol.type;
         if (indexType != DataType.INT) {
             addError(ctx, "Identifier must be of type int");
         }
