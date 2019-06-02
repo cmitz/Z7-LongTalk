@@ -10,6 +10,7 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
 
     private int currentVariableSlot = 1;
     private int branchCounter = 0;
+    private int ifInnerBranchCounter = 0;
 
     private Scope currentScope = new Scope();
 
@@ -44,12 +45,14 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
         ArrayList<String> code = new ArrayList<>();
 
         // Increment branchCounter so next loop has proper labels
-        int branch = branchCounter++;
+        int branch = ++branchCounter;
 
         code.addAll(visit(ctx.compareExpression));
 
         code.add("ldc " + (ctx.NEGATION() != null ? "0" : "1"));
         code.add("if_icmpeq ifthen" + branch);
+
+        code.addAll( visit(ctx.elseifstatement(0) ));
 
         code.addAll(visit(ctx.elsestatements));
 
@@ -60,6 +63,35 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
         code.addAll(visit(ctx.thenstatements));
 
         code.add("ifend" + branch + ":");
+
+        // Reset innerBranchCounter
+        ifInnerBranchCounter = 0;
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitElseifstatement( LongTalkParser.ElseifstatementContext ctx ) {
+        ArrayList<String> code = new ArrayList<>();
+
+        int parentBranch = branchCounter;
+        int innerBranch = ++ifInnerBranchCounter;
+
+        code.addAll(visit(ctx.compareExpression));
+
+        code.add("ldc " + (ctx.NEGATION() != null ? "0" : "1"));
+
+        // Go to end of this elseif block if false (opposite of ifstatement!)
+        code.add("if_icmpne ifend" + parentBranch + "_" + innerBranch);
+
+        code.addAll( visit(ctx.thenstatements) );
+
+        // If done, go to end of parent block
+        code.add("goto ifend" + parentBranch);
+
+        // End of elseif block
+        code.add("ifend" + parentBranch + "_" + innerBranch + ":");
+
         return code;
     }
 
@@ -199,7 +231,31 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitExAndOrOp( LongTalkParser.ExAndOrOpContext ctx ) {
         ArrayList<String> code = new ArrayList<>();
 
-        //TODO: must set only a 1 or a 0 in the end
+        int branch = branchCounter++;
+
+        // Visit both boolean statements
+        code.addAll( visit(ctx.left) );
+        code.addAll( visit(ctx.right) );
+
+        // add them both up
+        code.add("iadd");
+
+        String operator = ctx.and.getText();
+        switch(operator) {
+            case "&&": // Both must be true, so added they need == `2`
+                code.add("ldc 2");
+                break;
+            case "||": // At least one must be true, so added they need >= `1`
+                code.add("ldc 1");
+                break;
+        }
+
+        code.add("if_icmpge lgctrue" + branch);
+        code.add("ldc 0"); //false
+        code.add("goto lgcend" + branch);
+        code.add("lgctrue" + branch + ":");
+        code.add("ldc 1"); //true
+        code.add("lgcend" + branch + ":");
 
         return code;
     }

@@ -8,7 +8,7 @@ statement: ifstatement
          | printstatement
          ;
 ifstatement: 'if' NEGATION? compareExpression=expression thenstatements=statement* elseifstatement* ('else' elsestatements=statement*)? 'stop';
-elseifstatement: 'else if' NEGATION? compareExpression=expression statement*;
+elseifstatement: 'else if' NEGATION? compareExpression=expression thenstatements=statement*;
 
 declaration: 'remember that' IDENTIFIER ('is a' | 'is an') declaredType=('int' | 'string' | 'boolean');
 

@@ -352,6 +352,7 @@ public class LongTalkParser extends Parser {
 
 	public static class ElseifstatementContext extends ParserRuleContext {
 		public ExpressionContext compareExpression;
+		public StatementContext thenstatements;
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -401,7 +402,7 @@ public class LongTalkParser extends Parser {
 				{
 				{
 				setState(65);
-				statement();
+				((ElseifstatementContext)_localctx).thenstatements = statement();
 				}
 				}
 				setState(70);

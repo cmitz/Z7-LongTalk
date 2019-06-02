@@ -54,12 +54,30 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
         }
 
         currentScope = currentScope.createChildScope();
-        for( LongTalkParser.StatementContext statement : ctx.statement() )
-            visit(statement);
-
+        visit(ctx.thenstatements);
         currentScope = currentScope.getParentScope();
 
-        // TODO: put some type?
+        for( LongTalkParser.ElseifstatementContext statement : ctx.elseifstatement() )
+            visit(statement);
+
+        visit(ctx.elsestatements);
+
+        return null;
+    }
+
+    @Override
+    public DataType visitElseifstatement( LongTalkParser.ElseifstatementContext ctx) {
+        //TODO: Fix duplication of ifstatement somehow?
+        DataType expressionType = visit(ctx.compareExpression);
+
+        if (expressionType != DataType.BOOLEAN) {
+            addError(ctx, "Expression not resolving into a boolean");
+        }
+
+        currentScope = currentScope.createChildScope();
+        visit(ctx.thenstatements);
+        currentScope = currentScope.getParentScope();
+
         return null;
     }
 
