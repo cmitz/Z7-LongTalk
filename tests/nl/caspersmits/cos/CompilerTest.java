@@ -3,8 +3,6 @@ package nl.caspersmits.cos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -32,15 +30,7 @@ class CompilerTest {
     @Test
     void testExampleOne() {
         String expectedOutput = "Hello world!\n";
-
-        try {
-            compiler.compileFile("examples/01-print.lt");
-
-            String actualOutput = Compiler.runClassFile();
-            assertEquals( expectedOutput, actualOutput);
-        } catch (Throwable e) {
-            fail(e.toString());
-        }
+        assertEqualsOutputFile("examples/01-print.lt", expectedOutput);
     }
 
 
@@ -50,16 +40,8 @@ class CompilerTest {
                 "Hello World\n" +
                 "true\n";
 
-        try {
-            compiler.compileFile("examples/02-variables.lt");
-
-            String actualOutput = Compiler.runClassFile();
-            assertEquals( expectedOutput, actualOutput);
-        } catch (Throwable e) {
-            fail(e.toString());
-        }
+        assertEqualsOutputFile("examples/02-variables.lt", expectedOutput);
     }
-
 
     @Test
     void testExampleThree() {
@@ -67,8 +49,23 @@ class CompilerTest {
                 "Smaller Scope Variable\n" +
                 "Program Variable\n";
 
+        assertEqualsOutputFile("examples/03-scoping.lt", expectedOutput);
+    }
+
+    @Test
+    void testExampleFour() {
+        String expectedOutput = "42 is truly the answer\n";
+        assertEqualsOutputFile("examples/04-branching.lt", expectedOutput);
+    }
+
+    /**
+     * Asserts that the output of a source file is the same as expected
+     * @param fileName          Source file to compile and run
+     * @param expectedOutput    Output that is expected
+     */
+    void assertEqualsOutputFile(String fileName, String expectedOutput) {
         try {
-            compiler.compileFile("examples/03-scoping.lt");
+            compiler.compileFile(fileName);
 
             String actualOutput = Compiler.runClassFile();
             assertEquals( expectedOutput, actualOutput);

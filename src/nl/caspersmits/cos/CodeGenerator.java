@@ -52,15 +52,19 @@ public class CodeGenerator extends LongTalkBaseVisitor<ArrayList<String>> {
         code.add("ldc " + (ctx.NEGATION() != null ? "0" : "1"));
         code.add("if_icmpeq ifthen" + branch);
 
-        code.addAll( visit(ctx.elseifstatement(0) ));
+        for (LongTalkParser.ElseifstatementContext statement : ctx.elseifstatement()) {
+            code.addAll( visit(statement) );
+        }
 
-        code.addAll(visit(ctx.elsestatements));
+        for( LongTalkParser.StatementContext statement : ctx.elsestatements )
+            code.addAll( visit(statement) );
 
         code.add("goto ifend" + branch);
 
         code.add("ifthen" + branch + ":");
 
-        code.addAll(visit(ctx.thenstatements));
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            code.addAll( visit(statement) );
 
         code.add("ifend" + branch + ":");
 

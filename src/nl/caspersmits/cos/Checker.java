@@ -54,13 +54,15 @@ public class Checker extends LongTalkBaseVisitor<DataType> {
         }
 
         currentScope = currentScope.createChildScope();
-        visit(ctx.thenstatements);
+        for( LongTalkParser.StatementContext statement : ctx.thenstatements )
+            visit(statement);
         currentScope = currentScope.getParentScope();
 
         for( LongTalkParser.ElseifstatementContext statement : ctx.elseifstatement() )
             visit(statement);
 
-        visit(ctx.elsestatements);
+        for( LongTalkParser.StatementContext statement : ctx.elsestatements )
+            visit(statement);
 
         return null;
     }

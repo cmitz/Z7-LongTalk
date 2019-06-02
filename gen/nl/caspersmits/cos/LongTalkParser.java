@@ -233,8 +233,9 @@ public class LongTalkParser extends Parser {
 
 	public static class IfstatementContext extends ParserRuleContext {
 		public ExpressionContext compareExpression;
-		public StatementContext thenstatements;
-		public StatementContext elsestatements;
+		public StatementContext statement;
+		public List<StatementContext> thenstatements = new ArrayList<StatementContext>();
+		public List<StatementContext> elsestatements = new ArrayList<StatementContext>();
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -290,7 +291,8 @@ public class LongTalkParser extends Parser {
 				{
 				{
 				setState(37);
-				((IfstatementContext)_localctx).thenstatements = statement();
+				((IfstatementContext)_localctx).statement = statement();
+				((IfstatementContext)_localctx).thenstatements.add(((IfstatementContext)_localctx).statement);
 				}
 				}
 				setState(42);
@@ -325,7 +327,8 @@ public class LongTalkParser extends Parser {
 					{
 					{
 					setState(50);
-					((IfstatementContext)_localctx).elsestatements = statement();
+					((IfstatementContext)_localctx).statement = statement();
+					((IfstatementContext)_localctx).elsestatements.add(((IfstatementContext)_localctx).statement);
 					}
 					}
 					setState(55);
