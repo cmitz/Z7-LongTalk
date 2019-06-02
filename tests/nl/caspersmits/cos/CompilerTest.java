@@ -85,18 +85,18 @@ class CompilerTest {
 
         assertEqualsCompileErrors(
                 "examples/91-SyntaxError-print.lt",
-                LongTalkException.class,
+                LongTalkSyntaxException.class,
                 expectedOutput);
     }
 
     @Test
-    void testBadExampleTwo() { // TODO: less generic error?
+    void testBadExampleTwo() {
         String expectedOutput = "Error on line 2: Variable myVariable must be declared before assignment\n" +
                 "Error on line 4: Variable myVariable not declared.\n";
 
         assertEqualsCompileErrors(
                 "examples/92-DeclarationError-variables.lt",
-                LongTalkException.class,
+                LongTalkTypeException.class,
                 expectedOutput);
     }
 
@@ -122,7 +122,7 @@ class CompilerTest {
      * @param expectedException     LongTypeException class to assert
      * @param expectedOutput        Output that is expected
      */
-    void assertEqualsCompileErrors(String fileName, Class<LongTalkException> expectedException, String expectedOutput) {
+    <T extends LongTalkException> void assertEqualsCompileErrors(String fileName, Class<T> expectedException, String expectedOutput) {
         // Capture stdErr
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
         PrintStream stdErr = System.err;
